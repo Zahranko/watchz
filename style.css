@@ -717,7 +717,7 @@ section.philosophy > .container > p {
 
 /* Mobile menu styles */
 .mobile-menu {
-  position: fixed;
+  position: absolute;
   top: 60px; 
   right: 0;
   width: 220px;
@@ -933,4 +933,5 @@ section.feature-banner {
     .watch-img {
         width: 180px;
     }
+
 }
