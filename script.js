@@ -61,3 +61,33 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    // 1. Select all the cards
+    const cards = document.querySelectorAll('.collection-card');
+
+    // 2. Set up the Intersection Observer options
+    // threshold: 0.1 means animation triggers when 10% of the card is visible
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px" // Triggers slightly before the very bottom
+    };
+
+    // 3. Create the observer logic
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        // If the card is in the viewport
+        if (entry.isIntersecting) {
+          // Add the 'visible' class to trigger CSS animation
+          entry.target.classList.add('visible');
+          // Stop observing this card (so it doesn't animate again if you scroll up)
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // 4. Attach observer to each card
+    cards.forEach(card => {
+      observer.observe(card);
+    });
+  });

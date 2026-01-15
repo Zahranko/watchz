@@ -300,17 +300,23 @@ nav a:focus {
     justify-content: flex-start;
   }
 }
-
 /* Featured Stories */
+/* =========================================
+   1. SECTION & TYPOGRAPHY
+   ========================================= */
 section.featured-stories {
   padding: 4rem 0 2rem;
   background: #f9f9f9;
+  /* Perspective gives the 3D lift effect more depth */
+  perspective: 1000px; 
 }
+
 section.featured-stories .container > h2 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
   text-align: center;
 }
+
 section.featured-stories p.intro {
   text-align: center;
   font-weight: 500;
@@ -319,21 +325,55 @@ section.featured-stories p.intro {
   margin: 0.2rem auto 3rem;
 }
 
+/* =========================================
+   2. STORY CARD (Grid & Animation)
+   ========================================= */
 .story {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
   margin-bottom: 4rem;
+  
+  /* Initial State for Animation */
+  opacity: 0;
+  transform: translateY(30px);
+  /* Apply the Entrance Animation */
+  animation: fadeInUp 0.8s ease-out forwards;
 }
+
+/* Staggered Delay: Stories appear one by one */
+.story:nth-of-type(1) { animation-delay: 0.2s; }
+.story:nth-of-type(2) { animation-delay: 0.4s; }
+.story:nth-of-type(3) { animation-delay: 0.6s; }
+
+/* =========================================
+   3. IMAGES & HOVER EFFECTS
+   ========================================= */
 .story img {
   border-radius: 6px;
+  width: 100%;
+  height: auto;
+  /* Smooth transition for the hover effect */
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+
+/* When hovering the STORY, the IMAGE lifts up */
+.story:hover img {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   4. CONTENT STYLING
+   ========================================= */
 .story-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
 }
+
 .story-category-date {
   font-size: 0.8rem;
   font-weight: 700;
@@ -342,69 +382,108 @@ section.featured-stories p.intro {
   letter-spacing: 1.2px;
   margin-bottom: 0.3rem;
 }
+
 .story h3 {
   margin-bottom: 0.6rem;
   font-size: 1.25rem;
   color: #222;
 }
+
 .story p {
   color: #555;
   margin-bottom: 0.8rem;
 }
 
-/* Featured Stories Button Style */
+/* =========================================
+   5. BUTTONS (With Slide Effect)
+   ========================================= */
 .story a.read-more {
-  display: inline-block;   
-  background-color: #000;     
-  color: #fff;                
+  display: inline-block;
+  background-color: #000;
+  color: #fff;
   font-weight: 700;
   font-size: 14px;
-  text-transform: uppercase;   
-  letter-spacing: 0.12em;      
-  padding: 10px 20px;       
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 10px 20px;
   border: none;
-  border-radius: 0;            
-  text-decoration: none;       
-  transition: all 0.3s ease;
-  margin-top: 1rem;            
-}
-
-/* Hover Effect */
-.story a.read-more:hover,
-.story a.read-more:focus {
-  background-color: #333;      
-  color: #fff;                
+  border-radius: 0;
   text-decoration: none;
+  margin-top: 1rem;
+  
+  /* Necessary for the slide effect */
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  transition: color 0.3s ease;
 }
 
-/* Alternate story direction on wider screens */
+/* The sliding red background */
+.story a.read-more::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #d90429; /* Matches category color */
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease-out;
+}
+
+.story a.read-more:hover::after,
+.story a.read-more:focus::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* =========================================
+   6. MEDIA QUERIES (Layout Logic)
+   ========================================= */
 @media(min-width: 700px) {
   .story {
     grid-template-columns: repeat(2, 1fr);
     align-items: center;
   }
+  
+  /* Alternating Layout */
   .story:nth-child(even) {
     direction: rtl;
     text-align: right;
   }
-  .story:nth-child(even) img,
+  .story:nth-child(even) img, 
   .story:nth-child(even) .story-content {
     direction: ltr;
     text-align: left;
   }
 }
 
+/* =========================================
+   7. KEYFRAMES (Animation Definitions)
+   ========================================= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 /* Collections Section */
 section.collections {
   padding: 4rem 0 4rem;
-  background-color: #fff; 
+  background-color: #fff;
 }
 
 section.collections > .container > h2 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
   text-align: center;
-  font-weight: 300; 
+  font-weight: 300;
   letter-spacing: 1px;
 }
 
@@ -419,55 +498,101 @@ section.collections > .container > p.intro {
 /* The Grid Setup */
 .collection-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; 
-  gap: 20px; 
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-/* Make it stack on mobile phones */
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .collection-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* The Card */
+/* THE CARD & ANIMATION SETUP 
+   --------------------------
+   1. Opacity 0 makes them hidden initially.
+   2. translateY(50px) pushes them down.
+   3. We add a transition for smooth movement.
+*/
 .collection-card {
   display: flex;
   flex-direction: column;
   background: transparent;
+  
+  /* Initial State for Animation */
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out, box-shadow 0.3s ease;
+  border-radius: 4px; /* Slight rounding for better hover effect */
 }
+
+/* THE VISIBLE STATE 
+   (Added by JavaScript when scrolling)
+*/
+.collection-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered Animation Delays 
+   This makes cards appear one after another, not all at once.
+*/
+.collection-card:nth-child(1) { transition-delay: 0.1s; }
+.collection-card:nth-child(2) { transition-delay: 0.2s; }
+.collection-card:nth-child(3) { transition-delay: 0.3s; }
+.collection-card:nth-child(4) { transition-delay: 0.4s; }
+.collection-card:nth-child(5) { transition-delay: 0.5s; }
+.collection-card:nth-child(6) { transition-delay: 0.6s; }
+
 
 /* Image Handling */
 .image-wrapper {
-   overflow: hidden; 
+   overflow: hidden;
    width: 100%;
 }
 
 .collection-card img {
   width: 100%;
-  height: 450px; 
+  height: 450px;
   object-fit: cover;
   display: block;
-  transition: transform 0.6s ease; 
+  transition: transform 0.6s ease;
 }
 
+/* HOVER EFFECTS 
+   --------------------------
+   1. Zoom image
+   2. Lift card slightly
+   3. Add soft shadow
+*/
 .collection-card:hover img {
-  transform: scale(1.03); 
+  transform: scale(1.05);
+}
+
+.collection-card:hover {
+  transform: translateY(-5px) !important; /* !important overrides the scroll transform slightly */
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 }
 
 /* The Details (Text below image) */
 .collection-details {
-  padding: 1rem 0; 
-  text-align: left; 
+  padding: 1rem 0;
+  text-align: left;
 }
 
 .collection-name {
   font-weight: 700;
-  font-size: 14px; 
+  font-size: 14px;
   color: #000;
-  text-transform: uppercase; 
+  text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.collection-card:hover .collection-name {
+    color: #444; /* Subtle text color change on hover */
 }
 
 .collection-subtitle {
@@ -475,7 +600,8 @@ section.collections > .container > p.intro {
   color: #555;
   font-weight: 400;
 }
-/* Styling for the pagination container */
+
+/* Pagination Controls */
 .pagination-controls {
     display: flex;
     justify-content: center;
@@ -488,7 +614,7 @@ section.collections > .container > p.intro {
 /* Button Styling */
 .page-btn {
     background-color: #000000;
-    border: 1px solid ; /* Dark border */
+    border: 1px solid #000;
     color: #FFFFFF;
     padding: 10px 25px;
     font-size: 14px;
@@ -500,20 +626,20 @@ section.collections > .container > p.intro {
     display: flex;
     align-items: center;
     gap: 10px;
+    outline: none;
 }
 
 .page-btn:hover:not(:disabled) {
- 
     background-color: #333;
     color: #fff;
+    transform: scale(1.05); /* Slight grow effect */
 }
 
-/* Disabled state (e.g., Previous button on Page 1) */
 .page-btn:disabled {
    background-color: #FFFFFF;
-    border-color: #ccc;
-    color: #ccc;
-    cursor: not-allowed;
+   border-color: #ccc;
+   color: #ccc;
+   cursor: not-allowed;
 }
 
 .page-indicators {
@@ -525,6 +651,23 @@ section.collections > .container > p.intro {
 /* Utility class to hide items */
 .hidden {
     display: none;
+}
+
+/* BUTTON PULSE ANIMATION 
+   Draws attention to the 'Next' button
+*/
+@keyframes pulse-black {
+  0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+}
+
+#nextBtn:not(:disabled) {
+  animation: pulse-black 2s infinite;
+}
+
+#nextBtn:hover {
+  animation: none;
 }
 
 /* Journal Section Container (Kept exactly as yours) */
@@ -809,7 +952,57 @@ footer {
   display: none;
 }
 
-/* Feature Banner Section */
+/* =========================================
+   ANIMATION KEYFRAMES (New Additions)
+   ========================================= */
+
+/* Smooth Fade Up for Text */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Subtle Zoom In for Hero Images */
+@keyframes smoothZoom {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Continuous Floating for the Watch */
+@keyframes floatWatch {
+  0% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-15px) rotate(-5deg); }
+  100% { transform: translateY(0) rotate(-5deg); }
+}
+
+/* Slide in from left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px) rotate(-5deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotate(-5deg);
+  }
+}
+
+/* =========================================
+   FEATURE BANNER SECTION
+   ========================================= */
+
 section.feature-banner {
   padding-bottom: 4rem; 
   background-color: #fff; 
@@ -823,7 +1016,12 @@ section.feature-banner {
   letter-spacing: 0.1em;
   color: #000;
   margin-bottom: 10px; 
-  margin-left: 2px;    
+  margin-left: 2px;
+  
+  /* Animation */
+  opacity: 0; /* Start hidden */
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.2s;
 }
 
 /* 2. Image Styling */
@@ -833,12 +1031,21 @@ section.feature-banner {
   display: block;
   max-height: 600px;
   object-fit: cover;
+
+  /* Animation */
+  opacity: 0;
+  animation: smoothZoom 1.2s ease-out forwards;
 }
 
 /* 3. Bottom Text Styling */
 .banner-footer {
   margin-top: 15px; 
   margin-left: 2px; 
+  
+  /* Animation */
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.5s; /* Delays so it appears after image */
 }
 
 .banner-year {
@@ -857,6 +1064,7 @@ section.feature-banner {
   text-decoration: none;
   color: #000;
   transition: opacity 0.3s ease;
+  display: inline-block; /* Required for transform animations on hover */
 }
 
 .banner-link:hover {
@@ -873,168 +1081,212 @@ section.feature-banner {
   transform: translateX(4px);
 }
 
+/* =========================================
+   NEWSLETTER SECTION
+   ========================================= */
+
 /* Main Container */
 .newsletter-section {
-    display: flex;
-    width: 100%;
-    max-width: 1000px;
-    height: 350px;
-    background: rgb(139,0,0);
-    background: linear-gradient(115deg, #8b0000 45%, #f5f5f5 45.5%);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    overflow: hidden;
-    position: relative;
-    margin: 50px auto;
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  height: 350px;
+  background: rgb(139,0,0);
+  background: linear-gradient(115deg, #8b0000 45%, #f5f5f5 45.5%);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  overflow: hidden;
+  position: relative;
+  margin: 50px auto;
+
+  /* Animation for the whole box */
+  opacity: 0;
+  animation: fadeInUp 1s ease-out forwards;
+  animation-delay: 0.3s;
 }
 
 /* Left Side: Image */
 .image-container {
-    flex: 1;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .watch-img {
-    width: 280px; 
-    z-index: 2;
-    transform: rotate(-5deg); 
-    filter: drop-shadow(5px 10px 10px rgba(0,0,0,0.5));
+  width: 280px; 
+  z-index: 2;
+  filter: drop-shadow(5px 10px 10px rgba(0,0,0,0.5));
+  
+  /* Animation: Slide in, then float forever */
+  /* We combine two animations here */
+  animation: 
+    slideInLeft 1s ease-out forwards,       /* 1. Enter */
+    floatWatch 4s ease-in-out infinite 1s;  /* 2. Float (starts after 1s) */
 }
 
 /* Right Side: Content */
 .content-container {
-    flex: 1.2;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; 
-    padding: 40px;
-    text-align: center;
-    z-index: 2;
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; 
+  padding: 40px;
+  text-align: center;
+  z-index: 2;
 }
 
+/* Staggered Animations for Content Elements */
+
 .brand-logo {
-    font-size: 2rem;
-    font-weight: bold;
-    letter-spacing: 2px;
-    color: #000;
-    margin-bottom: 5px;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #000;
+  margin-bottom: 5px;
+  
+  /* Animation */
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.6s;
 }
 
 .cta-text {
-    font-size: 0.9rem;
-    color: #555;
-    margin-bottom: 25px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  /* Animation */
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.8s;
 }
 
 /* Form Styling */
 .signup-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
-    max-width: 350px;
-    margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  max-width: 350px;
+  margin-bottom: 30px;
+
+  /* Animation */
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 1s;
 }
 
 .signup-form input {
-    padding: 12px 15px;
-    border: 1px solid #ccc;
-    font-size: 0.9rem;
-    outline: none;
-    background: rgba(255, 255, 255, 0.9);
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  outline: none;
+  background: rgba(255, 255, 255, 0.9);
+  transition: border-color 0.3s;
+}
+
+.signup-form input:focus {
+  border-color: #8b0000;
 }
 
 .signup-form button {
-    padding: 12px 15px;
-    background-color: #8b0000; 
-    color: white;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: background 0.3s;
+  padding: 12px 15px;
+  background-color: #8b0000; 
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .signup-form button:hover {
-    background-color: #600000;
+  background-color: #600000;
+  transform: translateY(-2px); /* slight lift on hover */
 }
 
 /* The 'Born to Dare' Slogan Badge */
 .slogan-badge {
-    background-color: #8b0000;
-    color: white;
-    padding: 5px 10px;
-    font-weight: bold;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  background-color: #8b0000;
+  color: white;
+  padding: 5px 10px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  /* Animation */
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 1.2s;
 }
 
-/* Mobile Responsiveness */
+/* =========================================
+   MOBILE RESPONSIVENESS
+   ========================================= */
 
 @media (max-width: 768px) {
-    .newsletter-section {
-        flex-direction: column;
-        /* CRITICAL FIX 1: Allow height to grow based on content */
-        height: auto; 
-        /* CRITICAL FIX 2: Remove the gradient from parent, we will color the children instead */
-        background: transparent; 
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Slightly softer shadow for mobile */
-    }
+  .newsletter-section {
+    flex-direction: column;
+    height: auto; 
+    background: transparent; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+  }
 
-    /* Top Half (Red Background) */
-    .image-container {
-        width: 100%;
-        background-color: #8b0000; /* Solid red background */
-        padding: 40px 0;
-        /* Optional: Round top corners if you want */
-        border-radius: 5px 5px 0 0; 
-    }
-    
-    .watch-img {
-        width: 160px; /* Slightly smaller to fit nicely */
-        transform: rotate(-5deg);
-    }
+  /* Top Half (Red Background) */
+  .image-container {
+    width: 100%;
+    background-color: #8b0000; 
+    padding: 40px 0;
+    border-radius: 5px 5px 0 0; 
+  }
+  
+  .watch-img {
+    width: 160px; 
+    /* Mobile Animation: Simplify to just float, no slide from left */
+    animation: floatWatch 4s ease-in-out infinite; 
+  }
 
-    /* Bottom Half (White/Gray Background) */
-    .content-container {
-        width: 100%;
-        background-color: #f5f5f5; /* Solid white/gray background */
-        padding: 40px 20px; /* Add padding to give text room */
-        text-align: center;
-        align-items: center; /* Ensures flex items (logo/form) are centered */
-        /* Optional: Round bottom corners */
-        border-radius: 0 0 5px 5px; 
-    }
+  /* Bottom Half (White/Gray Background) */
+  .content-container {
+    width: 100%;
+    background-color: #f5f5f5; 
+    padding: 40px 20px; 
+    text-align: center;
+    align-items: center; 
+    border-radius: 0 0 5px 5px; 
+  }
 
-    /* Fix the form width on mobile so it doesn't touch edges */
-    .signup-form {
-        width: 100%;
-        max-width: 100%;
-    }
-    
-   .brand-logo {
-        width: 100%;
-        text-align: center;
-        
-        /* 1. Force text to stay on one line */
-        white-space: nowrap; 
-        
-        /* 2. Remove any word breaking instructions */
-        word-wrap: normal;
-        
-        /* 3. Make font smaller so it actually fits on one line */
-        font-size: 1.2rem; 
-        
-        margin: 0 auto 15px auto;
-        display: block;
-    }
+  .signup-form {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .brand-logo {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap; 
+    word-wrap: normal;
+    font-size: 1.2rem; 
+    margin: 0 auto 15px auto;
+    display: block;
+  }
+}
+
+/* Optional: Accessability Preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    opacity: 1 !important;
+  }
 }
 /*newwwwwwwww*/
 /* --- Brand Strip Styles --- */
